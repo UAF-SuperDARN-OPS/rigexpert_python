@@ -50,30 +50,30 @@ class rigexpert_analyzer:
         return (f, r, x)
 
     def _command_scalar(self, cmd):
-        self.ser.write(cmd + '\n')
-        r = self.ser.readline()
+        self.ser.write((cmd + '\n').encode('utf-8'))
+        r = self.ser.readline().decode()
         while len(r) == 2 : # skip ahead, the aa-30 spits out lots of blank lines..
-            r = self.ser.readline()
+            r = self.ser.readline().decode()
         if VERBOSE:
             print('command: {}, response: {}'.format(cmd, r))
         return r[:-2]
 
     def _command_vector(self, cmd, lines):
-        self.ser.write(cmd + '\n')
+        self.ser.write((cmd + '\n').encode('utf-8'))
 
         print('command: ' + cmd)
 
         r = []
         
-        l = self.ser.readline()
+        l = self.ser.readline().decode()
         while len(l) == 2 :
-            l = self.ser.readline()
+            l = self.ser.readline().decode()
 
         for i in range(lines):
-            l = self.ser.readline().split(',')
+            l = self.ser.readline().decode().split(',')
             l = [float(li) for li in l]
             r.append(l)
-            print r[-1]
+            print( r[-1])
         
         return r
 
@@ -91,7 +91,7 @@ def main():
     vswr = (1 + ref) / (1 - ref)
    
     
-    with open('{}_ant{}.csv'.format(RADAR, ant), 'wb') as csvfile:
+    with open('{}_ant{}.csv'.format(RADAR, ant), 'w') as csvfile:
         csvwriter = csv.writer(csvfile, delimiter=' ', quotechar='|', quoting=csv.QUOTE_MINIMAL)
 
         csvwriter.writerow(['freq (MHz)', 'vswr', 'R (ohms)', 'X (ohms)'])
@@ -105,6 +105,7 @@ def main():
     plt.title('antenna {} VSWR'.format(ant))
     axes = plt.gca()
     axes.set_ylim([0, 10])
+    axes.grid(True)
     plt.savefig('{}_ant{}.png'.format(RADAR, ant)) 
     plt.show()
     
