@@ -1,5 +1,5 @@
 # jon klein, jtklein@alaska.edu
-# python API for rigexpert antenna analyzers, see http://www.rigexpert.com/index?f=aa_commands
+# python API for rigexpert antenna analyzers, see https://rigexpert.com/data-exchange-with-rigexpert-antenna-analyzers/
 # mit license
 
 # You must be in the group dialout and tty to use a USB serial connection. 
@@ -31,12 +31,12 @@ class rigexpert_analyzer:
     
     # set center frequency in hz
     def cfreq(self, freq):
-        assert self._command_scalar('FQ{}'.format(str(int(freq)))) == 'OK'
+        assert self._command_scalar(f"FQ{int(freq)}") == 'OK'
         self.cfreq_hz = freq
     
     # set span in hz
     def span(self, span_hz):
-        assert self._command_scalar('SW{}'.format(str(int(span_hz)))) == 'OK'
+        assert self._command_scalar(f"SW{int(span_hz)}") == 'OK'
         self.span_hz = span_hz
 
     # measure a sweep
@@ -45,7 +45,7 @@ class rigexpert_analyzer:
         assert self.span_hz != 0
         assert npoints > 0
 
-        cmd = 'FRX' + str(int(npoints))
+        cmd = f"FRX{int(npoints)}"
 
         s = self._command_vector(cmd, npoints)
         f = np.array([si[0] for si in s])
@@ -60,13 +60,13 @@ class rigexpert_analyzer:
         while len(r) == 2 : # skip ahead, the aa-30 spits out lots of blank lines..
             r = self.ser.readline().decode()
         if VERBOSE:
-            print('command: {}, response: {}'.format(cmd, r))
+            print(f"command: {cmd}, response: {r}")
         return r[:-2]
 
     def _command_vector(self, cmd, lines):
         self.ser.write((cmd + '\n').encode('utf-8'))
 
-        print('command: ' + cmd)
+        print(f"command: {cmd}")
 
         r = []
         
@@ -89,6 +89,8 @@ def main():
     ra.cfreq(13e6)
     ra.span(10e6)
     f, r, x = ra.sweep(10)
+
+    ra.close()
     
     z = r + 1j * x
     z0 = 50
@@ -96,14 +98,14 @@ def main():
     vswr = (1 + ref) / (1 - ref)
    
     
-    with open(f"{RADAR}_ant{ant}.csv", 'w') as csvfile:
+    with open(f"{RADAR}_ant{int(ant):02}.csv", 'w') as csvfile:
         csvwriter = csv.writer(csvfile, delimiter=' ', quotechar='|', quoting=csv.QUOTE_MINIMAL)
 
         csvwriter.writerow(['Freq (MHz)', 'VSWR', 'R (ohms)', 'X (ohms)'])
         for i in range(len(f)):
             csvwriter.writerow([f[i], vswr[i], r[i], x[i]])
 
-    ra.close()
+    
     plt.plot(f, vswr)
     plt.xlabel('Frequency (MHz)')
     plt.ylabel('VSWR')
@@ -112,7 +114,7 @@ def main():
     axes = plt.gca()
     axes.set_ylim([0, 10])
     axes.grid(True)
-    plt.savefig(f"{RADAR}_ant{ant}.png") 
+    plt.savefig(f"{RADAR}_ant{int(ant):02}.png") 
     plt.show()
     
 if __name__ == '__main__':
