@@ -2,6 +2,11 @@
 # python API for rigexpert antenna analyzers, see http://www.rigexpert.com/index?f=aa_commands
 # mit license
 
+# You must be in the group dialout and tty to use a USB serial connection. 
+# Use the following command to do so:
+# sudo usermod -a -G tty $USER
+# sudo usermod -a -G dialout $USER
+
 import serial
 import numpy as np
 import matplotlib.pyplot as plt
