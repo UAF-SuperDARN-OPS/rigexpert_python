@@ -10,7 +10,7 @@ import pdb
 
 RIGPORT = '/dev/ttyUSB0'
 VERBOSE = True
-RADAR = 'adw'
+RADAR = 'test'
 
 class rigexpert_analyzer:
     def __init__(self, port = RIGPORT):
@@ -79,7 +79,7 @@ class rigexpert_analyzer:
 
 
 def main():
-    ant = input('enter an antenna number: ')
+    ant = input('Enter an antenna number: ')
     ra = rigexpert_analyzer()
     ra.cfreq(13e6)
     ra.span(10e6)
@@ -94,15 +94,16 @@ def main():
     with open('{}_ant{}.csv'.format(RADAR, ant), 'w') as csvfile:
         csvwriter = csv.writer(csvfile, delimiter=' ', quotechar='|', quoting=csv.QUOTE_MINIMAL)
 
-        csvwriter.writerow(['freq (MHz)', 'vswr', 'R (ohms)', 'X (ohms)'])
+        csvwriter.writerow(['Freq (MHz)', 'VSWR', 'R (ohms)', 'X (ohms)'])
         for i in range(len(f)):
             csvwriter.writerow([f[i], vswr[i], r[i], x[i]])
 
     ra.close()
     plt.plot(f, vswr)
-    plt.xlabel('frequency (MHz)')
+    plt.xlabel('Frequency (MHz)')
     plt.ylabel('VSWR')
-    plt.title('antenna {} VSWR'.format(ant))
+    plt.title('Antenna {} VSWR'.format(ant))
+    plt.yticks(np.arange(0, 11, step=1))
     axes = plt.gca()
     axes.set_ylim([0, 10])
     axes.grid(True)
