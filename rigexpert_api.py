@@ -91,7 +91,7 @@ def main():
     vswr = (1 + ref) / (1 - ref)
    
     
-    with open('{}_ant{}.csv'.format(RADAR, ant), 'w') as csvfile:
+    with open(f"{RADAR}_ant{ant}.csv", 'w') as csvfile:
         csvwriter = csv.writer(csvfile, delimiter=' ', quotechar='|', quoting=csv.QUOTE_MINIMAL)
 
         csvwriter.writerow(['Freq (MHz)', 'VSWR', 'R (ohms)', 'X (ohms)'])
@@ -102,12 +102,12 @@ def main():
     plt.plot(f, vswr)
     plt.xlabel('Frequency (MHz)')
     plt.ylabel('VSWR')
-    plt.title('Antenna {} VSWR'.format(ant))
+    plt.title(f"Antenna {ant} VSWR")
     plt.yticks(np.arange(0, 11, step=1))
     axes = plt.gca()
     axes.set_ylim([0, 10])
     axes.grid(True)
-    plt.savefig('{}_ant{}.png'.format(RADAR, ant)) 
+    plt.savefig(f"{RADAR}_ant{ant}.png") 
     plt.show()
     
 if __name__ == '__main__':
