@@ -1,0 +1,130 @@
+General commands:
+
+Command: @#^@%
+Response: ERROR
+Description: unsupported command
+
+Command: VER
+Response: AA-x y
+Description: returns analyzer type and firmware version
+
+Command: ON
+Response: OK
+Description: turn on the RF board of the analyzer
+
+Command: OFF
+Response: OK
+Description: turn off the RF board of the analyzer
+
+Measurement commands:
+
+Command: FQx
+Response: OK
+Description: set center frequency (in Hz) to x
+
+Command: SWx
+Response: OK
+Description: set sweep range to x Hz
+
+Command: GET
+Response: OK
+Response: n1,n2,n3,n4,n5,n6,n7,n8,n9,n10,n11,n12
+Description: output 12 ADC values at single frequency
+(Internal format, use FRXn instead.)
+
+Command: GTn
+Response: n1,n2,n3,n4,n5,n6,n7,n8,n9,n10,n11,n12
+Response: ……………………………..
+Response: n1,n2,n3,n4,n5,n6,n7,n8,n9,n10,n11,n12
+Response: OK
+Description: output these values at n+1 steps (step size is calculated automatically)
+(Internal format, use FRXn instead.)
+
+Command: FRXn
+Response: fq,r,x
+Response: ……………………………..
+Response: fq,r,x
+Response: OK
+Description: output frequency (MHz), R and X at n+1 steps (see the detailed description below)
+
+Internal commands (used for testing):
+
+Command: PHx
+Description: set reference DDS phase to x (AA-200, AA-230 and AA-230PRO only)
+
+Command: Kx
+Description: connect AD8302 to antenna (x=0) or 51R load (x=1) (AA-200, AA-230 and AA-230PRO only)
+
+Command: AMx
+Description: set output amplitude to x=0…1023 (AA-200, AA-230 and AA-230PRO only)
+
+Command: DEx
+Description: set measurement delay to x relative units (x=1000 by default)
+
+Data flash commands:
+
+Command: FLASHR
+Description: read the entire data memory (512K bytes for AA-200, AA-500, AA-230, AA-230PRO, AA-520 and 128K bytes for AA-54)
+
+Command: FLASHRn
+Description: read the memort slot n
+(Internal format, use FLASHH and FLASHFRXn instead.)
+
+Command: FLASHW
+Description: write back to the graph memory (512K bytes for AA-200, AA-500, AA-230, AA-230PRO, AA-520 and 128K bytes for AA-54)
+
+Command: FLASHE
+Description: erase all graphs
+
+Command: FLASHS
+Description: reset the analyzer
+
+Graph memory commands (except for AA-30):
+
+Command: FLASHH
+Response: <memory number>,<center fq 1>, <range 1>, <number of points>: <memory 1 name>
+Response: <memory number>,<center fq 2>, <range 2>, <number of points>: <memory 2 name>
+Response: …
+Respinse: OK
+Description: read stored memory headers
+
+Command: FLASHFRXn
+Response: fq,r,x
+Response: ……………………………..
+Response: fq,r,x
+Response: OK
+Description: read data stored in memory n (the output format is similar to the FRXn command)
+
+Screenshot commands
+
+When a screenshot key combination is pressed, analyzers will return the following:
+
+B&W LCDs:
+1) Pattern: the “screenshot: ” string;
+2) Data: 1024 bytes for AA-200/230/230PRO/500/520 or 1064 bytes for AA-30/AA-54;
+3) <CR><LF>
+
+Every bit of received data corresponds to a single pixel on the screen, the direction is top-to-bottom and left-to-right.
+
+AA-1000:
+1) Pattern: the “screenshot: ” string;
+2) Data: 76800 words (for each pixel on the screen, 320×240 pixels)
+3) <CR><LF>
+
+AA-1000, compressed format (firmware 405 and up):
+1) Pattern: the “screencomp: ” string;
+2) Data: two bytes as pixel color, third byte is length of the same color (covering all 320×240 pixels)
+3) <CR><LF>
+
+Detailed description of the FRX command
+
+This command is originally designed to let programs other than AntScope communicate with RigExpert antenna anlyzers.
+
+Usage:
+
+    Send the ON command to turn on the RF board of the analyzer.
+    Set center frequency with the FQ command.
+    Set scan range with the SW command.
+    Send the FRX command and collect data.
+    Send the OFF command to turn off the RF board of the analyzer.
+
