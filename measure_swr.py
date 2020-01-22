@@ -3,7 +3,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import csv
-import pdb
 
 from rigexpert_api import rigexpert_analyzer
 

@@ -1,9 +1,6 @@
 #!/bin/python3
 
 import numpy as np
-import matplotlib.pyplot as plt
-import csv
-import pdb
 
 from rigexpert_api import rigexpert_analyzer
 
@@ -29,6 +26,7 @@ def main():
             if (x[value] * x[value + 1]) <= 0:
                 resonance_frequency = (f[value] + f[value + 1]) / 2
                 break
+            
         print(f"Resonance of approximation {approx}: {resonance_frequency * 1e6}")
 
     
