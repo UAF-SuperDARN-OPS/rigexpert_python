@@ -7,14 +7,21 @@ import pdb
 
 from rigexpert_api import rigexpert_analyzer
 
-RADAR = 'ionosonde'
-
 def main():
-    ant = input('Enter an antenna number: ')
+    radar = input("Enter the site name: ")
+    ant = input("Enter an antenna number [0-99]: ")
+    start_freq = float(input("Enter start frequency [MHz]: "))
+    stop_freq = float(input("Enter stop frequency [MHz]: "))
+
+    center_freq = (stop_freq + start_freq) / 2
+    print(f"Center frequency: {center_freq} MHz")
+    span = stop_freq - start_freq
+    print(f"Span: {span} MHz")
+
     ra = rigexpert_analyzer()
-    ra.cfreq(10e6)
-    ra.span(20e6)
-    f, r, x = ra.sweep(400)
+    ra.cfreq(center_freq * 1e6)
+    ra.span(span * 1e6)
+    f, r, x = ra.sweep(int(span * 20))
 
     ra.close()
     
@@ -24,23 +31,23 @@ def main():
     vswr = (1 + ref) / (1 - ref)
    
     
-    with open(f"{RADAR}_ant{int(ant):02}.csv", 'w') as csvfile:
+    with open(f"{radar}_ant{int(ant):02}.csv", 'w') as csvfile:
         csvwriter = csv.writer(csvfile, delimiter=' ', quotechar='|', quoting=csv.QUOTE_MINIMAL)
 
-        csvwriter.writerow(['Freq (MHz)', 'VSWR', 'R (ohms)', 'X (ohms)'])
+        csvwriter.writerow(["Freq (MHz)", "VSWR", "R (ohms)", "X (ohms)"])
         for i in range(len(f)):
             csvwriter.writerow([f[i], vswr[i], r[i], x[i]])
 
     print(f)
     plt.plot(f, vswr)
-    plt.xlabel('Frequency (MHz)')
-    plt.ylabel('VSWR')
+    plt.xlabel("Frequency (MHz)")
+    plt.ylabel("VSWR")
     plt.title(f"Antenna {ant} VSWR")
     plt.yticks(np.arange(0, 11, step=1))
     axes = plt.gca()
     axes.set_ylim([0, 10])
     axes.grid(True)
-    plt.savefig(f"{RADAR}_ant{int(ant):02}.png") 
+    plt.savefig(f"{radar}_ant{int(ant):02}.png") 
     plt.show()
     
 if __name__ == '__main__':
