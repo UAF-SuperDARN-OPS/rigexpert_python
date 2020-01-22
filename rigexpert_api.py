@@ -15,9 +15,16 @@ VERBOSE = True
 
 class rigexpert_analyzer:
     def __init__(self, port = RIGPORT):
-        self.ser = serial.Serial(port, 38400, timeout = 5)
+        self.port = port
+        self.ser = serial.Serial(self.port, 38400, timeout = 5)
         assert self._command_scalar('ON') == 'OK'
         #assert self._command_scalar('VER') == 'AA-30 109'
+        self.span_hz = 0
+        self.cfreq_hz = 0
+
+    def open(self):
+        self.ser = serial.Serial(self.port, 38400, timeout = 5)
+        assert self._command_scalar('ON') == 'OK'
         self.span_hz = 0
         self.cfreq_hz = 0
 
