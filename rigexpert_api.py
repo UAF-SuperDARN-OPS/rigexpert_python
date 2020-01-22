@@ -50,7 +50,7 @@ class rigexpert_analyzer:
 
         cmd = f"FRX{int(npoints)}"
 
-        s = self._command_vector(cmd, npoints)
+        s = self._command_vector(cmd, npoints+1)
         f = np.array([si[0] for si in s])
         r = np.array([si[1] for si in s])
         x = np.array([si[2] for si in s])
@@ -72,10 +72,6 @@ class rigexpert_analyzer:
         print(f"command: {cmd}")
 
         r = []
-        
-        l = self.ser.readline().decode()
-        while len(l) == 2 :
-            l = self.ser.readline().decode()
 
         for i in range(lines):
             l = self.ser.readline().decode().split(',')
