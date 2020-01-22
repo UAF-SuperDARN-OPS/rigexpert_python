@@ -29,7 +29,6 @@ def main():
     z0 = 50
     ref = abs((z - z0) / (z + z0))
     vswr = (1 + ref) / (1 - ref)
-   
     
     with open(f"{radar}_ant{int(ant):02}.csv", 'w') as csvfile:
         csvwriter = csv.writer(csvfile, delimiter=' ', quotechar='|', quoting=csv.QUOTE_MINIMAL)
@@ -38,7 +37,6 @@ def main():
         for i in range(len(f)):
             csvwriter.writerow([f[i], vswr[i], r[i], x[i]])
 
-    print(f)
     plt.plot(f, vswr)
     plt.xlabel("Frequency (MHz)")
     plt.ylabel("VSWR")
