@@ -1,3 +1,4 @@
+#!/bin/python3
 
 import numpy as np
 import matplotlib.pyplot as plt
@@ -6,14 +7,14 @@ import pdb
 
 from rigexpert_api import rigexpert_analyzer
 
-RADAR = 'test'
+RADAR = 'ionosonde'
 
 def main():
     ant = input('Enter an antenna number: ')
     ra = rigexpert_analyzer()
-    ra.cfreq(13e6)
-    ra.span(10e6)
-    f, r, x = ra.sweep(10)
+    ra.cfreq(10e6)
+    ra.span(20e6)
+    f, r, x = ra.sweep(400)
 
     ra.close()
     
@@ -30,7 +31,7 @@ def main():
         for i in range(len(f)):
             csvwriter.writerow([f[i], vswr[i], r[i], x[i]])
 
-    
+    print(f)
     plt.plot(f, vswr)
     plt.xlabel('Frequency (MHz)')
     plt.ylabel('VSWR')
