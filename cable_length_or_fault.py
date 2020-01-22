@@ -1,3 +1,4 @@
+#!/bin/python3
 
 import numpy as np
 import matplotlib.pyplot as plt
@@ -24,7 +25,7 @@ def main():
 
         ra.close()
 
-        for value in range(len(x)):
+        for value in range(len(x)-1):
             if (x[value] * x[value + 1]) <= 0:
                 resonance_frequency = (f[value] + f[value + 1]) / 2
                 break
